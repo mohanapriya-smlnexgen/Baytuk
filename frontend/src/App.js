@@ -72,7 +72,7 @@ function MenuPage({ data, activeCategory, setActiveCategory }) {
                       <div className="dish-image-wrapper">
                         {dish.image ? (
                           <img 
-                            src={`http://127.0.0.1:8000${dish.image}`} 
+                            src={dish.image}
                             alt={dish.name} 
                             className="dish-image"
                             onError={(e) => {
@@ -116,21 +116,28 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState(null);
 
-  useEffect(() => {
-    axios
-      .get('http://127.0.0.1:8000/api/home/')
-      .then((res) => {
-        setData(res.data);
-        if (res.data.menu_categories?.length > 0) {
-          setActiveCategory(res.data.menu_categories[0].id);
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+ const API_BASE =
+  window.location.hostname === 'localhost'
+    ? 'http://127.0.0.1:8000'
+    : 'https://baytuk.33threads.in';
+
+useEffect(() => {
+  axios
+    .get(`${API_BASE}/api/home/`)
+    .then((res) => {
+      setData(res.data);
+
+      if (res.data.menu_categories?.length > 0) {
+        setActiveCategory(res.data.menu_categories[0].id);
+      }
+
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error(err);
+      setLoading(false);
+    });
+}, []);
 
   if (loading) {
     return (
@@ -266,7 +273,7 @@ function App() {
                           <div className="slider-image-wrapper">
                             {dish.image ? (
                               <img 
-                                src={`http://127.0.0.1:8000${dish.image}`} 
+                                src={dish.image}
                                 alt={dish.name} 
                                 className="slider-image"
                                 onError={(e) => {
